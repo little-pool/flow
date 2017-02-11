@@ -82,10 +82,9 @@ public class flowRFS {
     	for(int i = adj1.begin() ; !adj1.end() ; i = adj1.next()){
     		System.out.print(i);
     	}
-    	
-    	
-    	
-    	
+    	System.out.print("\n");
+    	Path p1 = new Path(g1, 0);
+    	p1.PathPrint(6);
         return opaque;
     }
     
