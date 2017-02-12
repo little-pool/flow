@@ -78,7 +78,7 @@ public class flowRFS {
     		g1.addEdge(Integer.valueOf(edge_info.leaf("souDevice").valueAsString()), Integer.valueOf(edge_info.leaf("desDevice").valueAsString()));
 		}
     	g1.printGraph();
-    	adjIterator adj1 = g1.new adjIterator(g1, 0);
+    	adjIterator adj1 = g1.new adjIterator(g1, 1);
     	for(int i = adj1.begin() ; !adj1.end() ; i = adj1.next()){
     		System.out.print(i);
     	}

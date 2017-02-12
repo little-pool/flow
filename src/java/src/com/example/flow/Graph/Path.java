@@ -26,7 +26,7 @@ public class Path {
 	 */
 	private void DeepFirstSearch(int nodeID){
 		visited[nodeID] = true;
-		adjIterator adj = graph.new adjIterator(graph, sourceNode);
+		adjIterator adj = graph.new adjIterator(graph, nodeID);
 		for(int i = adj.begin() ; !adj.end() ; i = adj.next()){
 			if(!visited[i]){
 				from[i] = nodeID;
