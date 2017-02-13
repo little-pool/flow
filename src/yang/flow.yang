@@ -38,7 +38,7 @@ module flow {
           key "graphName";
           leaf graphName{type string;}
           leaf nodeNum{type uint32;}
-          leaf edge_num{type uint32;}
+          leaf edgeNum{type uint32;}
           list nodeInfo{
             key "deviceID";
             leaf deviceID{type uint32;}
