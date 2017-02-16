@@ -40,7 +40,7 @@ public class Path {
 	 * 利用栈回溯起点到终点的from数组
 	 * 最后出栈打印即可得到深优遍历的路径，但并非是最短路径
 	 */
-	private Vector<Integer> GetPath(int desNode){
+	public Vector<Integer> GetPath(int desNode){
 		Stack<Integer> pathStack = new Stack<>();
 		int i = desNode;
 		while( i != -1 ){
@@ -78,7 +78,7 @@ public class Path {
 	public void PathPrint(int desNode){
 		Vector<Integer> path = GetPath(desNode);
 		for(int i = 0 ; i < path.size() ; i ++){
-			if(i != desNode){
+			if(path.get(i) != desNode){
 				System.out.print(path.get(i));
 				System.out.print(" -> ");
 			}

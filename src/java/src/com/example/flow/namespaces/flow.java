@@ -59,6 +59,8 @@ public class flow extends ConfNamespace {
     public static final String _native_ = "native";
     public static final int    _hours = 1625129637;
     public static final String _hours_ = "hours";
+    public static final int    _edgeNum = 861066131;
+    public static final String _edgeNum_ = "edgeNum";
     public static final int    _name = 1998270519;
     public static final String _name_ = "name";
     public static final int    _pathType = 930560239;
@@ -139,8 +141,6 @@ public class flow extends ConfNamespace {
     public static final String _lsa_services_ = "lsa-services";
     public static final int    _in_sync = 1179976821;
     public static final String _in_sync_ = "in-sync";
-    public static final int    _edge_num = 1103269875;
-    public static final String _edge_num_ = "edge_num";
     public static final int    _deviceID = 805638750;
     public static final String _deviceID_ = "deviceID";
     public static final int    _lsa_service = 378697498;

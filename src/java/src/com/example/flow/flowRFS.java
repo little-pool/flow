@@ -1,11 +1,14 @@
 package com.example.flow;
 
 import com.example.flow.namespaces.*;
+import com.sun.xml.internal.ws.api.server.Container;
 import com.example.flow.Graph.*;
 import com.example.flow.Graph.DenseModeGraph.adjIterator;
 
 import java.util.List;
 import java.util.Properties;
+import java.util.Vector;
+
 import com.tailf.conf.*;
 import com.tailf.navu.*;
 import com.tailf.ncs.ns.Ncs;
@@ -78,13 +81,27 @@ public class flowRFS {
     		g1.addEdge(Integer.valueOf(edge_info.leaf("souDevice").valueAsString()), Integer.valueOf(edge_info.leaf("desDevice").valueAsString()));
 		}
     	g1.printGraph();
-    	adjIterator adj1 = g1.new adjIterator(g1, 1);
-    	for(int i = adj1.begin() ; !adj1.end() ; i = adj1.next()){
-    		System.out.print(i);
-    	}
-    	System.out.print("\n");
+//    	adjIterator adj1 = g1.new adjIterator(g1, 1);
+//    	for(int i = adj1.begin() ; !adj1.end() ; i = adj1.next()){
+//    		System.out.print(i);
+//    	}
+//    	System.out.print("\n");
+//    	Path p1 = new Path(g1, 3);
+//    	p1.PathPrint(5);
+    	Vector<Integer> v1 =  new Vector<Integer>();
     	Path p1 = new Path(g1, 0);
-    	p1.PathPrint(6);
+    	v1 = p1.GetPath(5);
+    	NavuList nodeInfo = service.list("nodeInfo");
+    	for(int i = 0 ; i < v1.size() ; i ++){
+    		if(v1.get(i) != 5){
+    			System.out.print(nodeInfo.elem(v1.get(i).toString()).leaf("deviceName").valueAsString());
+    			System.out.print(" -> ");
+    		}
+    		else{
+    			System.out.print(nodeInfo.elem(v1.get(i).toString()).leaf("deviceName").valueAsString());
+    			System.out.print("\n");
+    		}
+    	}
         return opaque;
     }
     
