@@ -1,14 +1,12 @@
 package com.example.flow;
-
 import com.example.flow.namespaces.*;
-import com.sun.xml.internal.ws.api.server.Container;
 import com.example.flow.Graph.*;
 import com.example.flow.Graph.DenseModeGraph.adjIterator;
-
+import com.example.flow.Graph.NodeUtil;
+import com.example.flow.Graph.Flow;
 import java.util.List;
 import java.util.Properties;
 import java.util.Vector;
-
 import com.tailf.conf.*;
 import com.tailf.navu.*;
 import com.tailf.ncs.ns.Ncs;
@@ -48,7 +46,7 @@ public class flowRFS {
      * @throws ConfException
      */
 
-    @ServiceCallback(servicePoint="graphImport-servicepoint",
+    @ServiceCallback(servicePoint="flow-servicepoint",
         callType=ServiceCBType.CREATE)
     public Properties graphImport(ServiceContext context,
              NavuNode service,
@@ -59,59 +57,69 @@ public class flowRFS {
     	 * 加载graph对象
     	 * 设备名的最后两个字符为设备ID，作为graph节点ID
     	 */
-    	//测试输出当前所有连接设备ID
-    	/*NavuContainer devices = ncsRoot.container("devices");
-    	NavuList device = devices.list("device");
-    	for(NavuContainer device_info : device){
-    		System.out.print(device_info.leaf("name").valueAsString());
-    		System.out.println("\t");
-    	}*/
-    	//测试输出所有yang数据
-    	/*NavuList nodeInfo = service.list("nodeInfo");
-    	for(NavuContainer node_info : nodeInfo){
-    		System.out.print(node_info.leaf("deviceID").valueAsString());
-    		System.out.print(":");
-    		System.out.print(node_info.leaf("deviceName").valueAsString());
-    		System.out.print("\n");
-    	}*/
+    	//graphImport part
+    	NavuContainer graphImport = service.container("graphImport");
+    	NavuList graph = graphImport.list("graph");
+    	for(NavuContainer graphInfo : graph){
+    		NodeUtil nu_tmp = new NodeUtil();
+    		int nodeNum = Integer.valueOf(graphInfo.leaf("nodeNum").valueAsString());
+        	DenseModeGraph g1 = new DenseModeGraph(nodeNum, false);
+        	for (NavuContainer edge_info : graphInfo.list("edge")) {
+        		g1.addEdge(Integer.valueOf(edge_info.leaf("souDevice").valueAsString()), Integer.valueOf(edge_info.leaf("desDevice").valueAsString()));
+    		}
+        	g1.printGraph();
+        	Vector<Integer> v1 =  new Vector<Integer>();
+        	Path p1 = new Path(g1, 0);
+        	v1 = p1.GetPath(5);
+        	NavuList nodeInfo = graphInfo.list("nodeInfo");
+        	for(int i = 0 ; i < v1.size() ; i ++){
+        		if(v1.get(i) != 5){
+        			//System.out.print(nodeInfo.elem(v1.get(i).toString()).leaf("deviceName").valueAsString());
+        			System.out.print(nu_tmp.Get_nodeName(graphInfo, v1.get(i)));
+        			System.out.print(" -> ");
+        		}
+        		else{
+        			//System.out.print(nodeInfo.elem(v1.get(i).toString()).leaf("deviceName").valueAsString());
+        			System.out.print(nu_tmp.Get_nodeName(graphInfo, v1.get(i)));
+        			System.out.print("\n");
+        		}
+        	}
+    	}
     	
-    	int nodeNum = Integer.valueOf(service.leaf("nodeNum").valueAsString());
-    	DenseModeGraph g1 = new DenseModeGraph(nodeNum, false);
-    	for (NavuContainer edge_info : service.list("edge")) {
-    		g1.addEdge(Integer.valueOf(edge_info.leaf("souDevice").valueAsString()), Integer.valueOf(edge_info.leaf("desDevice").valueAsString()));
-		}
-    	g1.printGraph();
-//    	adjIterator adj1 = g1.new adjIterator(g1, 1);
-//    	for(int i = adj1.begin() ; !adj1.end() ; i = adj1.next()){
-//    		System.out.print(i);
-//    	}
-//    	System.out.print("\n");
-//    	Path p1 = new Path(g1, 3);
-//    	p1.PathPrint(5);
-    	Vector<Integer> v1 =  new Vector<Integer>();
-    	Path p1 = new Path(g1, 0);
-    	v1 = p1.GetPath(5);
-    	NavuList nodeInfo = service.list("nodeInfo");
-    	for(int i = 0 ; i < v1.size() ; i ++){
-    		if(v1.get(i) != 5){
-    			System.out.print(nodeInfo.elem(v1.get(i).toString()).leaf("deviceName").valueAsString());
-    			System.out.print(" -> ");
-    		}
-    		else{
-    			System.out.print(nodeInfo.elem(v1.get(i).toString()).leaf("deviceName").valueAsString());
-    			System.out.print("\n");
-    		}
+    	//flowTable part
+    	NavuContainer flowTable = service.container("flowTable");
+    	NavuList flow = flowTable.list("flow");
+    	for(NavuContainer flowInfo : flow){
+    		
     	}
         return opaque;
     }
     
-    @ServiceCallback(servicePoint="flowTable-servicepoint",
-		callType=ServiceCBType.CREATE)
-    public Properties flowTable(ServiceContext context,
-    		NavuNode service,
-    		NavuNode ncsRoot,
-    		Properties opaque)
-			throws ConfException{
-    	return opaque;
-    }
+//    @ServiceCallback(servicePoint="flowTable-servicepoint",
+//		callType=ServiceCBType.CREATE)
+//    public Properties flowTable(ServiceContext context,
+//    		NavuNode service,
+//    		NavuNode ncsRoot,
+//    		Properties opaque)
+//			throws ConfException{
+//    	NodeUtil nuTmp = new NodeUtil(service);
+//    	NavuLeaf graphName = service.leaf("graphName");
+//    	NavuContainer source_node = service.container("source_node");
+//    	NavuLeaf sourceDevice = source_node.leaf("Device");
+//    	NavuLeaf sourcePrefix = source_node.leaf("Prefix");
+//    	NavuLeaf sourceNetmask = source_node.leaf("Netmask");
+//    	NavuContainer des_node = service.container("des_node");
+//    	NavuLeaf desDevice = des_node.leaf("Device");
+//    	NavuLeaf desPrefix = des_node.leaf("Prefix");
+//    	NavuLeaf desNetmask = des_node.leaf("Netmask");
+//    	Flow flowTmp = new Flow(
+//    			sourcePrefix.valueAsString(),
+//    			nuTmp.Get_nodeID(sourceDevice.valueAsString()),
+//    			Integer.valueOf(sourceNetmask.valueAsString()),
+//    			desPrefix.valueAsString(),
+//    			nuTmp.Get_nodeID(desDevice.valueAsString()),
+//    			Integer.valueOf(desNetmask.valueAsString()));
+//    	
+//    	return opaque;
+//    }
 }

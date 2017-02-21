@@ -69,8 +69,8 @@ public class flow extends ConfNamespace {
     public static final String _get_modifications_ = "get-modifications";
     public static final int    _flow = 2144387363;
     public static final String _flow_ = "flow";
-    public static final int    _desPrefix = 2010426857;
-    public static final String _desPrefix_ = "desPrefix";
+    public static final int    _source_node = 1345662616;
+    public static final String _source_node_ = "source_node";
     public static final int    _level = 2112619197;
     public static final String _level_ = "level";
     public static final int    _nodeNum = 21757645;
@@ -91,6 +91,8 @@ public class flow extends ConfNamespace {
     public static final String _case_xml_ = "case-xml";
     public static final int    _log_entry = 1675303342;
     public static final String _log_entry_ = "log-entry";
+    public static final int    _Prefix = 1621189685;
+    public static final String _Prefix_ = "Prefix";
     public static final int    _no_networking = 479600569;
     public static final String _no_networking_ = "no-networking";
     public static final int    _cleared_by_admin = 1307536695;
@@ -121,6 +123,8 @@ public class flow extends ConfNamespace {
     public static final String _suppress_positive_result_ = "suppress-positive-result";
     public static final int    _graphName = 1734861307;
     public static final String _graphName_ = "graphName";
+    public static final int    _des_node = 1296598021;
+    public static final String _des_node_ = "des_node";
     public static final int    _admin_clear = 1581469852;
     public static final String _admin_clear_ = "admin-clear";
     public static final int    _specificPath = 2066868967;
@@ -145,6 +149,8 @@ public class flow extends ConfNamespace {
     public static final String _deviceID_ = "deviceID";
     public static final int    _lsa_service = 378697498;
     public static final String _lsa_service_ = "lsa-service";
+    public static final int    _Description = 667913114;
+    public static final String _Description_ = "Description";
     public static final int    _result = 401396173;
     public static final String _result_ = "result";
     public static final int    _reconcile = 652237750;
@@ -231,6 +237,8 @@ public class flow extends ConfNamespace {
     public static final String _id_ = "id";
     public static final int    _async = 1368962940;
     public static final String _async_ = "async";
+    public static final int    _Device = 251361427;
+    public static final String _Device_ = "Device";
     public static final int    _re_deploy_counter = 1940885313;
     public static final String _re_deploy_counter_ = "re-deploy-counter";
     public static final int    _infinity = 1378257424;
@@ -243,8 +251,6 @@ public class flow extends ConfNamespace {
     public static final String _used_by_customer_service_ = "used-by-customer-service";
     public static final int    _private = 2025604902;
     public static final String _private_ = "private";
-    public static final int    _souPrefix = 1903371407;
-    public static final String _souPrefix_ = "souPrefix";
     public static final int    _graphImport = 1476219504;
     public static final String _graphImport_ = "graphImport";
     public static final int    _check_sync = 1337316030;
@@ -255,6 +261,8 @@ public class flow extends ConfNamespace {
     public static final String _property_list_ = "property-list";
     public static final int    _services = 284312249;
     public static final String _services_ = "services";
+    public static final int    _Netmask = 1174192347;
+    public static final String _Netmask_ = "Netmask";
     public static final int    _nodeInfo = 1081863561;
     public static final String _nodeInfo_ = "nodeInfo";
     public static final int    _case_cli = 1248658608;
@@ -276,6 +284,5 @@ public class flow extends ConfNamespace {
     public static final int    _deep_check_sync = 928241134;
     public static final String _deep_check_sync_ = "deep-check-sync";
     public static final String callpoint_ncs_rfs_service_hook = "ncs-rfs-service-hook";
-    public static final String servicepoint_flowTable_servicepoint = "flowTable-servicepoint";
-    public static final String servicepoint_graphImport_servicepoint = "graphImport-servicepoint";
+    public static final String servicepoint_flow_servicepoint = "flow-servicepoint";
 }
