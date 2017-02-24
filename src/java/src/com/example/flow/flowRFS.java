@@ -68,7 +68,9 @@ public class flowRFS {
     	 */
     	//the next three lines are use for translate between deviceID and deviceName
     	NodeUtil nu_tmp = new NodeUtil();
+		//current graph container
     	NavuContainer ncUtility = new NavuContainer();
+		//current DencemodeGraph
     	DenseModeGraph graphTmp = null;
     	
     	for(NavuContainer graphInfo : graph){
@@ -82,23 +84,22 @@ public class flowRFS {
         	graphTmp = g1;
         	Vector<Integer> v1 =  new Vector<Integer>();
         	Path p1 = new Path(g1, 0);
-        	v1 = p1.GetPath(5);
+        	v1 = p1.GetPath(3);
         	NavuList nodeInfo = graphInfo.list("nodeInfo");
         	for(int i = 0 ; i < v1.size() ; i ++){
         		if(v1.get(i) != 5){
-        			//System.out.print(nodeInfo.elem(v1.get(i).toString()).leaf("deviceName").valueAsString());
         			System.out.print(nu_tmp.Get_nodeName(graphInfo, v1.get(i)));
         			System.out.print(" -> ");
         		}
         		else{
-        			//System.out.print(nodeInfo.elem(v1.get(i).toString()).leaf("deviceName").valueAsString());
         			System.out.print(nu_tmp.Get_nodeName(graphInfo, v1.get(i)));
         			System.out.print("\n");
         		}
         	}
-    	}
-    	
+    	}   	
     	//flowTable part
+		Template Temp_flowPath = new Template(context, "flow-template");
+		TemplateVariables TempVar_flowPath = new TemplateVariables();
     	NavuContainer flowTable = service.container("flowTable");
     	NavuList flow = flowTable.list("flow");
     	for(NavuContainer flowInfo : flow){
@@ -111,45 +112,32 @@ public class flowRFS {
     		NavuLeaf desDevice = des_node.leaf("Device");
     		NavuLeaf desPrefix = des_node.leaf("Prefix");
     		NavuLeaf desNetmask = des_node.leaf("Netmask");
-    		System.out.print(sourcePrefix.valueAsString());
-    		System.out.print(nu_tmp.Get_nodeID(ncUtility, sourceDevice.valueAsString()));
-    		System.out.print(Integer.valueOf(sourceNetmask.valueAsString()));
-    		System.out.print(desPrefix.valueAsString());
-    		System.out.print(nu_tmp.Get_nodeID(ncUtility, desDevice.valueAsString()));
-    		System.out.print(Integer.valueOf(desNetmask.valueAsString()));
     		Flow flowTemp = new Flow(sourcePrefix.valueAsString(), nu_tmp.Get_nodeID(ncUtility, sourceDevice.valueAsString()), Integer.valueOf(sourceNetmask.valueAsString()), desPrefix.valueAsString(), nu_tmp.Get_nodeID(ncUtility, desDevice.valueAsString()), Integer.valueOf(desNetmask.valueAsString()));	
     		if(flowInfo.leaf("pathType").valueAsString().equals("auto")){
-    			Vector<Integer> flowVector = flowTemp.forwardPath(graphTmp);
+				//Get two vectors that store the flowPath
+    			Vector<Integer> flowVector_forward = flowTemp.forwardPath(graphTmp);
+    			Vector<Integer> flowVector_reverse = flowTemp.reversePath();
+    			//forward template apply part
+				for(int i = 0 ; i < flowVector_forward.size() - 1 ; i ++){
+					TempVar_flowPath.putQuoted("DEVICE_NAME", nu_tmp.Get_nodeName(ncUtility, flowVector_forward.get(i)));
+					TempVar_flowPath.putQuoted("PREFIX", flowTemp.getDesPrefix());
+					TempVar_flowPath.putQuoted("NETMASK", String.valueOf(flowTemp.getSourceNetmask()));
+					String nextHop_IP = nu_tmp.Get_nodeLoop0IP(nu_tmp.Get_deviceInfo(ncsRoot, nu_tmp.Get_nodeName(ncUtility, flowVector_forward.get(i+1))));
+					TempVar_flowPath.putQuoted("NEXTHOP", nextHop_IP);
+					Temp_flowPath.apply(service, TempVar_flowPath);
+				}
+				//reverse template apply part
+				for(int i = 0 ; i < flowVector_reverse.size() - 1 ; i ++){
+					TempVar_flowPath.putQuoted("DEVICE_NAME", nu_tmp.Get_nodeName(ncUtility, flowVector_reverse.get(i)));
+					TempVar_flowPath.putQuoted("PREFIX", flowTemp.getSourcePrefix());
+					TempVar_flowPath.putQuoted("NETMASK", String.valueOf(flowTemp.getDesNetmask()));
+					String nextHop_IP = nu_tmp.Get_nodeLoop0IP(nu_tmp.Get_deviceInfo(ncsRoot, nu_tmp.Get_nodeName(ncUtility, flowVector_reverse.get(i+1))));
+					TempVar_flowPath.putQuoted("NEXTHOP", nextHop_IP);
+					Temp_flowPath.apply(service, TempVar_flowPath);
+				}
+    			System.out.print("over");
     		}
     	}
         return opaque;
     }
-    
-//    @ServiceCallback(servicePoint="flowTable-servicepoint",
-//		callType=ServiceCBType.CREATE)
-//    public Properties flowTable(ServiceContext context,
-//    		NavuNode service,
-//    		NavuNode ncsRoot,
-//    		Properties opaque)
-//			throws ConfException{
-//    	NodeUtil nuTmp = new NodeUtil(service);
-//    	NavuLeaf graphName = service.leaf("graphName");
-//    	NavuContainer source_node = service.container("source_node");
-//    	NavuLeaf sourceDevice = source_node.leaf("Device");
-//    	NavuLeaf sourcePrefix = source_node.leaf("Prefix");
-//    	NavuLeaf sourceNetmask = source_node.leaf("Netmask");
-//    	NavuContainer des_node = service.container("des_node");
-//    	NavuLeaf desDevice = des_node.leaf("Device");
-//    	NavuLeaf desPrefix = des_node.leaf("Prefix");
-//    	NavuLeaf desNetmask = des_node.leaf("Netmask");
-//    	Flow flowTmp = new Flow(
-//    			sourcePrefix.valueAsString(),
-//    			nuTmp.Get_nodeID(sourceDevice.valueAsString()),
-//    			Integer.valueOf(sourceNetmask.valueAsString()),
-//    			desPrefix.valueAsString(),
-//    			nuTmp.Get_nodeID(desDevice.valueAsString()),
-//    			Integer.valueOf(desNetmask.valueAsString()));
-//    	
-//    	return opaque;
-//    }
 }
